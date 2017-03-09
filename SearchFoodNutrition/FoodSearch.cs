@@ -8,8 +8,11 @@ namespace SearchFoodNutrition
     {
         public delegate void UpdateStatus();
         public UpdateStatus UpdateStatusMessage;
-        AllFoods fds;
-        Foods fs;
+
+        private AllFoods fds;
+        private Foods fs;
+        private BindingSource bs = new BindingSource();
+        private BindingNavigator bn;
 
         public FoodSearch()
         {
@@ -22,10 +25,16 @@ namespace SearchFoodNutrition
             fs.Index = -1;
             fds = new AllFoods();
 
-            fds.Completed += Fs_Completed;
+            fds.Completed += FoodSearch_Completed;
             fds.Status += Fds_Status;
 
             fds.ProcessFoods();
+            
+            bn = bindingNavigator1;
+            bn.BindingSource = bs;
+            dgvFood.DataSource = bs;
+            dgvFood.RowHeadersVisible = false;
+            dgvFood.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         delegate void ChangeTextCallback(string text);
@@ -44,11 +53,12 @@ namespace SearchFoodNutrition
             Status.Text = message;
         }
 
-        private void Fs_Completed()
+        private void FoodSearch_Completed()
         {
             fs = fds.Current;
-            tFood.AutoCompleteCustomSource = fds.GetNames("");
+            bs.DataSource = fds.GetNames("").ConvertAll(x => new { Value = x });
             tFood.Enabled = true;
+            dgvFood.Enabled = true;
         }
 
         private void tFood_TextChanged(object sender, EventArgs e)
@@ -57,35 +67,22 @@ namespace SearchFoodNutrition
                 return;
 
             if (fds.Current.Index > -1)
-            {
-                tFood.AutoCompleteCustomSource = fds.GetNames(tFood.Text);
-                tFood.AutoCompleteMode = AutoCompleteMode.Suggest;
-                tFood.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            }
-            LoadValues();
-        }
-
-        private void tFood_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && tFood.Text.Length > 0)
-                LoadValues();
-        }
-
-        private void tFood_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                LoadValues();
+                bs.DataSource = fds.GetNames(tFood.Text).ConvertAll(x => new { Value = x });
         }
 
         private void LoadValues()
         {
-            Foods lf = fds.LoadActive(tFood.Text);
+            if (dgvFood.SelectedRows.Count == 0)
+                return;
+
+            string value = dgvFood.SelectedRows[0].Cells[0].Value.ToString();
+            Foods lf = fds.LoadActive(value);
 
             if (lf.Index == -1)
                 return;
             //we have a value
             //load it to current
-            fs = fds.LoadActive(tFood.Text);
+            fs = fds.LoadActive(value);
             //update the labels
             if (fs.Measure == null)
                 vServing.Text = "No Measure or weight supplied";
@@ -94,6 +91,22 @@ namespace SearchFoodNutrition
             vCarbohydrates.Text = fs.Carb.ToString();
             vFibers.Text = fs.Fiber.ToString();
             vFats.Text = fs.Fat.ToString();
+        }
+
+        private void dgvFood_SelectionChanged(object sender, EventArgs e)
+        {
+            LoadValues();
+        }
+
+        private void dgvFood_DataSourceChanged(object sender, EventArgs e)
+        {
+            if (dgvFood.ColumnCount > 0)
+                dgvFood.Columns[0].HeaderText = "Foods";
+        }
+
+        private void dgvFood_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        {
+            dgvFood.Columns[0].HeaderText = "Foods";
         }
     }
 }

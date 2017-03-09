@@ -33,7 +33,6 @@ namespace SearchFoodNutrition
 
         private string prefix = "https://api.nal.usda.gov/ndb/nutrients/?format=json&";
         private string suffix = "&max=1500&nutrients=204&nutrients=205&nutrients=291&api_key=UtLGRdU1PNb1tQ2fuU3oecOgCCPUAdjQHwodMWFn";
-        private string apikey = "&api_key=UtLGRdU1PNb1tQ2fuU3oecOgCCPUAdjQHwodMWFn";
         private FoodRoot fr;
         private List<Food> fd;
         private string allFoods;
@@ -53,9 +52,9 @@ namespace SearchFoodNutrition
             LoadNutrition();
         }
 
-        public System.Windows.Forms.AutoCompleteStringCollection GetNames(string pre)
+        public List<string> GetNames(string pre)
         {
-            System.Windows.Forms.AutoCompleteStringCollection Names = new System.Windows.Forms.AutoCompleteStringCollection();
+            List<string> Names = new List<string>();
             if (fd == null)
                 Names.Add("");
             else
@@ -156,7 +155,7 @@ namespace SearchFoodNutrition
 
             fd = fr.report.foods;
             Current = LoadActive(0);
-            Status("Foods loaded");
+            Status("Enter filter");
             Completed();
             WriteFile();
         }
