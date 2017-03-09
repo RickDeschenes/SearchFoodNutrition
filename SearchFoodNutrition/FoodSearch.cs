@@ -59,6 +59,7 @@ namespace SearchFoodNutrition
             bs.DataSource = fds.GetNames("").ConvertAll(x => new { Value = x });
             tFood.Enabled = true;
             dgvFood.Enabled = true;
+            RefreshFoods.Enabled = fds.RefreshFoods;
         }
 
         private void tFood_TextChanged(object sender, EventArgs e)
@@ -84,13 +85,15 @@ namespace SearchFoodNutrition
             //load it to current
             fs = fds.LoadActive(value);
             //update the labels
-            if (fs.Measure == null)
+            if (fs.Measure == null && fs.Weight == 0)
                 vServing.Text = "No Measure or weight supplied";
+            else if (fs.Measure == null)
+                vServing.Text = "No Measure supplied - weight: " + fs.Weight + "g";
             else
-                vServing.Text = fs.Measure + " - " + fs.Weight + "(grams)";
-            vCarbohydrates.Text = fs.Carb.ToString();
-            vFibers.Text = fs.Fiber.ToString();
-            vFats.Text = fs.Fat.ToString();
+                vServing.Text = "Measure: " + fs.Measure + " - weight: " + fs.Weight + "g";
+            vCarbohydrates.Text = "Carb: " + fs.Carb.ToString();
+            vFibers.Text = "Fiber: " + fs.Fiber.ToString();
+            vFats.Text = "Fat: " + fs.Fat.ToString();
         }
 
         private void dgvFood_SelectionChanged(object sender, EventArgs e)
@@ -100,13 +103,18 @@ namespace SearchFoodNutrition
 
         private void dgvFood_DataSourceChanged(object sender, EventArgs e)
         {
-            if (dgvFood.ColumnCount > 0)
+            if (dgvFood.ColumnCount > 0 && dgvFood.Columns[0].HeaderText == "Foods")
                 dgvFood.Columns[0].HeaderText = "Foods";
         }
 
         private void dgvFood_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             dgvFood.Columns[0].HeaderText = "Foods";
+        }
+
+        private void RefreshFoods_Click(object sender, EventArgs e)
+        {
+            fds.ProcessFoods(true);
         }
     }
 }

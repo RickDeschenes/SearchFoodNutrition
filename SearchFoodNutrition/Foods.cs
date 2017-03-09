@@ -30,9 +30,12 @@ namespace SearchFoodNutrition
         public event MyStatus Status;
 
         public Foods Current = new Foods();
+        public bool RefreshFoods = false;
 
         private string prefix = "https://api.nal.usda.gov/ndb/nutrients/?format=json&";
         private string suffix = "&max=1500&nutrients=204&nutrients=205&nutrients=291&api_key=UtLGRdU1PNb1tQ2fuU3oecOgCCPUAdjQHwodMWFn";
+        private string totals = "https://api.nal.usda.gov/ndb/nutrients/?format=json&ndbno=09427&nutrients=204&max=1&api_key=UtLGRdU1PNb1tQ2fuU3oecOgCCPUAdjQHwodMWFn";
+
         private FoodRoot fr;
         private List<Food> fd;
         private string allFoods;
@@ -47,9 +50,13 @@ namespace SearchFoodNutrition
         /// <summary>
         /// Use load to load the search from the database
         /// </summary>
-        public void ProcessFoods()
+        public void ProcessFoods(bool force = false)
         {
-            LoadNutrition();
+            if (force == true || RefreshFoods == true)
+                LoadNutrition();
+            else
+                Completed();
+            Status("Please select an item or use the filter");
         }
 
         public List<string> GetNames(string pre)
@@ -60,7 +67,7 @@ namespace SearchFoodNutrition
             else
             {
                 Names.AddRange((from a in fr.report.foods
-                                where ( a.name.StartsWith(pre, true, System.Globalization.CultureInfo.CurrentCulture) )
+                                where ( a.name.Contains(pre) )
                                 select a.name).ToArray<string>());
             }
             return Names;
@@ -74,6 +81,8 @@ namespace SearchFoodNutrition
                 return food;
             food.Index = index;
             food.Name = fd[index].name;
+            food.Measure = fd[index].measure;
+            food.Weight = fd[index].weight;
             food.Carb = fd[index].nutrients[0].value;
             food.Fiber = fd[index].nutrients[1].value;
             food.Fat = fd[index].nutrients[2].value;
@@ -88,7 +97,6 @@ namespace SearchFoodNutrition
 
         private async void LoadNutrition()
         {
-
             string[] json;
             int j = 0;
             int start = 1;
@@ -101,8 +109,8 @@ namespace SearchFoodNutrition
                 string results = await hpClient.GetStringAsync(raw); //.ConfigureAwait(false);
                 int tstart = results.IndexOf("\"total\": ") + 8;
                 int tend = results.IndexOf(",", tstart);
-                string totals = results.Substring(tstart, tend - tstart);
-                int total = int.Parse(totals);
+                string stotal = results.Substring(tstart, tend - tstart);
+                int total = int.Parse(stotal);
                 if (fr != null && fr.report.total == total)
                 {
                     //we already have the data
@@ -127,8 +135,8 @@ namespace SearchFoodNutrition
                     json[j] = results;
                     tstart = results.IndexOf("\"end\": ") + 7;
                     tend = results.IndexOf(",", tstart);
-                    totals = results.Substring(tstart, tend - tstart);
-                    current = int.Parse(totals);
+                    stotal = results.Substring(tstart, tend - tstart);
+                    current = int.Parse(stotal);
                     j += 1;
                     Status("Processed " + j + " of " + ts + ".");
                 } while (total > current);
@@ -160,11 +168,20 @@ namespace SearchFoodNutrition
             WriteFile();
         }
 
-        private void ProcessAll(string json)
+        private async void ProcessAll(string json)
         {
             fr = Deserialize<FoodRoot>(json);
             fd = fr.report.foods;
             Current = LoadActive(0);
+
+            //Validate Refresh
+            HttpClient hpClient = new HttpClient();
+            string results = await hpClient.GetStringAsync(totals).ConfigureAwait(false);
+            int tstart = results.IndexOf("\"total\": ") + 8;
+            int tend = results.IndexOf(",", tstart);
+            string stotal = results.Substring(tstart, tend - tstart);
+            int total = int.Parse(stotal);
+            RefreshFoods = (total == fr.report.total);
         }
 
         private static FoodRoot Deserialize<FoodRoot>(string json)
@@ -207,6 +224,7 @@ namespace SearchFoodNutrition
             allFoods = Serialize(fr);
             var path = jsonFile;
             File.WriteAllText(path, allFoods);
+            RefreshFoods = true;
         }
     }
 

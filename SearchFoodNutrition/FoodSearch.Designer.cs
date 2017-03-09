@@ -32,13 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FoodSearch));
             this.Status = new System.Windows.Forms.Label();
             this.vServing = new System.Windows.Forms.Label();
-            this.Serving = new System.Windows.Forms.Label();
             this.vFats = new System.Windows.Forms.Label();
-            this.Fats = new System.Windows.Forms.Label();
             this.vFibers = new System.Windows.Forms.Label();
-            this.Fibers = new System.Windows.Forms.Label();
             this.vCarbohydrates = new System.Windows.Forms.Label();
-            this.Carbohydrates = new System.Windows.Forms.Label();
             this.dgvFood = new System.Windows.Forms.DataGridView();
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
@@ -54,7 +50,7 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tFood = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.RefreshFoods = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFood)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -63,7 +59,7 @@
             // Status
             // 
             this.Status.AutoSize = true;
-            this.Status.Location = new System.Drawing.Point(12, 50);
+            this.Status.Location = new System.Drawing.Point(12, 72);
             this.Status.Name = "Status";
             this.Status.Size = new System.Drawing.Size(164, 13);
             this.Status.TabIndex = 5;
@@ -72,83 +68,47 @@
             // vServing
             // 
             this.vServing.AutoSize = true;
-            this.vServing.Location = new System.Drawing.Point(121, 25);
+            this.vServing.Location = new System.Drawing.Point(12, 25);
             this.vServing.Name = "vServing";
             this.vServing.Size = new System.Drawing.Size(10, 13);
             this.vServing.TabIndex = 7;
             this.vServing.Text = ":";
             // 
-            // Serving
-            // 
-            this.Serving.AutoSize = true;
-            this.Serving.Location = new System.Drawing.Point(12, 25);
-            this.Serving.Name = "Serving";
-            this.Serving.Size = new System.Drawing.Size(104, 13);
-            this.Serving.TabIndex = 6;
-            this.Serving.Text = "Serving size - weight";
-            // 
             // vFats
             // 
             this.vFats.AutoSize = true;
-            this.vFats.Location = new System.Drawing.Point(494, 25);
+            this.vFats.Location = new System.Drawing.Point(314, 48);
             this.vFats.Name = "vFats";
             this.vFats.Size = new System.Drawing.Size(10, 13);
             this.vFats.TabIndex = 5;
             this.vFats.Text = ":";
             // 
-            // Fats
-            // 
-            this.Fats.AutoSize = true;
-            this.Fats.Location = new System.Drawing.Point(461, 25);
-            this.Fats.Name = "Fats";
-            this.Fats.Size = new System.Drawing.Size(27, 13);
-            this.Fats.TabIndex = 4;
-            this.Fats.Text = "Fats";
-            // 
             // vFibers
             // 
             this.vFibers.AutoSize = true;
-            this.vFibers.Location = new System.Drawing.Point(379, 25);
+            this.vFibers.Location = new System.Drawing.Point(167, 48);
             this.vFibers.Name = "vFibers";
             this.vFibers.Size = new System.Drawing.Size(10, 13);
             this.vFibers.TabIndex = 3;
             this.vFibers.Text = ":";
             // 
-            // Fibers
-            // 
-            this.Fibers.AutoSize = true;
-            this.Fibers.Location = new System.Drawing.Point(338, 25);
-            this.Fibers.Name = "Fibers";
-            this.Fibers.Size = new System.Drawing.Size(35, 13);
-            this.Fibers.TabIndex = 2;
-            this.Fibers.Text = "Fibers";
-            // 
             // vCarbohydrates
             // 
             this.vCarbohydrates.AutoSize = true;
-            this.vCarbohydrates.Location = new System.Drawing.Point(268, 25);
+            this.vCarbohydrates.Location = new System.Drawing.Point(12, 48);
             this.vCarbohydrates.Name = "vCarbohydrates";
             this.vCarbohydrates.Size = new System.Drawing.Size(10, 13);
             this.vCarbohydrates.TabIndex = 1;
             this.vCarbohydrates.Text = ":";
             // 
-            // Carbohydrates
-            // 
-            this.Carbohydrates.AutoSize = true;
-            this.Carbohydrates.Location = new System.Drawing.Point(228, 25);
-            this.Carbohydrates.Name = "Carbohydrates";
-            this.Carbohydrates.Size = new System.Drawing.Size(34, 13);
-            this.Carbohydrates.TabIndex = 0;
-            this.Carbohydrates.Text = "Carbs";
-            // 
             // dgvFood
             // 
             this.dgvFood.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.dgvFood.Location = new System.Drawing.Point(15, 72);
+            this.dgvFood.Location = new System.Drawing.Point(15, 88);
             this.dgvFood.Name = "dgvFood";
             this.dgvFood.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFood.Size = new System.Drawing.Size(597, 327);
+            this.dgvFood.Size = new System.Drawing.Size(597, 311);
             this.dgvFood.TabIndex = 8;
             this.dgvFood.DataSourceChanged += new System.EventHandler(this.dgvFood_DataSourceChanged);
             this.dgvFood.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dgvFood_ColumnAdded);
@@ -173,7 +133,7 @@
             this.bindingNavigatorDeleteItem,
             this.toolStripLabel1,
             this.tFood,
-            this.toolStripButton1});
+            this.RefreshFoods});
             this.bindingNavigator1.Location = new System.Drawing.Point(0, 0);
             this.bindingNavigator1.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.bindingNavigator1.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -282,14 +242,17 @@
             this.tFood.Size = new System.Drawing.Size(200, 25);
             this.tFood.TextChanged += new System.EventHandler(this.tFood_TextChanged);
             // 
-            // toolStripButton1
+            // RefreshFoods
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
+            this.RefreshFoods.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshFoods.Enabled = false;
+            this.RefreshFoods.Image = ((System.Drawing.Image)(resources.GetObject("RefreshFoods.Image")));
+            this.RefreshFoods.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshFoods.Name = "RefreshFoods";
+            this.RefreshFoods.Size = new System.Drawing.Size(23, 22);
+            this.RefreshFoods.Text = "R";
+            this.RefreshFoods.ToolTipText = "Refresh food details, 60 second or more.";
+            this.RefreshFoods.Click += new System.EventHandler(this.RefreshFoods_Click);
             // 
             // FoodSearch
             // 
@@ -299,13 +262,9 @@
             this.Controls.Add(this.dgvFood);
             this.Controls.Add(this.Status);
             this.Controls.Add(this.vServing);
-            this.Controls.Add(this.Serving);
             this.Controls.Add(this.vFats);
-            this.Controls.Add(this.Fats);
-            this.Controls.Add(this.Carbohydrates);
             this.Controls.Add(this.vFibers);
             this.Controls.Add(this.vCarbohydrates);
-            this.Controls.Add(this.Fibers);
             this.Controls.Add(this.bindingNavigator1);
             this.MinimumSize = new System.Drawing.Size(640, 450);
             this.Name = "FoodSearch";
@@ -322,13 +281,9 @@
 
         #endregion
         private System.Windows.Forms.Label vServing;
-        private System.Windows.Forms.Label Serving;
         private System.Windows.Forms.Label vFats;
-        private System.Windows.Forms.Label Fats;
         private System.Windows.Forms.Label vFibers;
-        private System.Windows.Forms.Label Fibers;
         private System.Windows.Forms.Label vCarbohydrates;
-        private System.Windows.Forms.Label Carbohydrates;
         private System.Windows.Forms.Label Status;
         private System.Windows.Forms.DataGridView dgvFood;
         private System.Windows.Forms.BindingNavigator bindingNavigator1;
@@ -345,7 +300,7 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripTextBox tFood;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton RefreshFoods;
     }
 }
 
